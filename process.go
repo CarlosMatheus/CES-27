@@ -71,7 +71,7 @@ func getMyPortNumber(portArg string, myId string) string {
 func initConnections() error {
 	ch  = make(chan string)
 
-	nonOtherServers := 3
+	nonOtherServers := 2
 	nServers = len(os.Args) - nonOtherServers
 
 	/* the 2 remove the name (Process) and remove the fist port, in the case it is my port */
@@ -88,8 +88,7 @@ func initConnections() error {
 
 	// Init client
 	for otherProcess := 0; otherProcess < nServers; otherProcess++ {
-
-		port := os.Args[otherProcess +nonOtherServers]
+		port := os.Args[otherProcess + nonOtherServers]
 
 		ServerAddr, err := net.ResolveUDPAddr("udp", port)
 		CheckError(err)
@@ -143,10 +142,21 @@ func main() {
 		select {
 		case x, valid := <-ch:
 			if valid {
-				fmt.Printf("Recebi do teclado: %s \n", x)
-				for j := 0; j < nServers; j++ {
-					go doClientJob(j, 100)
+				fmt.Printf("Destiny Id: %s \n", x)
+				destiny, err := strconv.Atoi(x)
+				CheckError(err)
+
+				destiny--
+				if destiny >= nServers {
+					err = errors.New("id out of range")
+					PrintError(err)
+				} else {
+					go doClientJob(destiny, 100)
 				}
+				//CheckError(err)
+				//for j := 0; j < nServers; j++ {
+				//	go doClientJob(j, 100)
+				//}
 			} else {
 				fmt.Println("Channel Closed!")
 			}
