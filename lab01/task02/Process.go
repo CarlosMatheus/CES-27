@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net"
@@ -10,14 +11,19 @@ import (
 	"time"
 )
 
+type ClockStruct struct {
+	Id     int
+	Clocks []int
+}
+
 var err string
 var myPort string
 var nServers int
 var CliConn []*net.UDPConn
-var ServerConn *net.UDPConn // connection with my server (where I receive messages from others processes)
+var ServerConn *net.UDPConn
 var ch chan string
 var myId string
-var logicalClock int
+var logicalClock ClockStruct
 
 /* Simple function to verify error */
 func CheckError(err error) {
@@ -36,34 +42,47 @@ func PrintError(err error) {
 func doServerJob() {
 	buf := make([]byte, 1024)
 
-		n, addr, err := ServerConn.ReadFromUDP(buf)
-		fmt.Println("Received", string(buf[0:n]), " from ", addr)
+	n, addr, err := ServerConn.ReadFromUDP(buf[0:])
+	CheckError(err)
+	fmt.Println("Received", buf[:n], " from ", addr)
 
-		logicalClockReceivedStr := string(buf[0:n])
+	var logicalClockReceived ClockStruct
+	//logicalClockReceived = ClockStruct{Id: 0, Clocks: make([]int, nServers)}
+	fmt.Println(n)
+	err = json.Unmarshal(buf[:n], &logicalClockReceived)
+	CheckError(err)
 
-		logicalClockReceived, err := strconv.Atoi(logicalClockReceivedStr)
-		CheckError(err)
+	fmt.Println(logicalClockReceived)
 
-		if logicalClockReceived > logicalClock {
-			logicalClock = logicalClockReceived
+	for i := 0; i < nServers; i++ {
+		fmt.Println(logicalClockReceived.Clocks[i])
+		if logicalClockReceived.Clocks[i] > logicalClock.Clocks[i] {
+			logicalClock.Clocks[i] = logicalClockReceived.Clocks[i]
 		}
+	}
 
-		logicalClock++
+	idNum, err := strconv.Atoi(myId)
+	CheckError(err)
 
-		fmt.Println("Current logical clock: ", logicalClock)
+	logicalClock.Clocks[idNum - 1]++
 
-		if err != nil {
-			fmt.Println("Error: ", err)
-		}
+	fmt.Println("Current logical Clocks: ", logicalClock.Clocks)
+
+	if err != nil {
+		fmt.Println("Error: ", err)
+	}
 }
 
-func doClientJob(otherProcess int, i int) {
-	msg := strconv.Itoa(i)
+func doClientJob(otherProcess int) {
+	fmt.Println("client", logicalClock)
+	jsonRequestByte, err := json.Marshal(logicalClock)
+	fmt.Println("client", jsonRequestByte)
+	CheckError(err)
 
-	buf := []byte(msg)
-	_, err := CliConn[otherProcess].Write(buf)
+	buf := jsonRequestByte
+	_, err = CliConn[otherProcess].Write(buf)
 	if err != nil {
-		fmt.Println(msg, err)
+		fmt.Println(jsonRequestByte, err)
 	}
 	time.Sleep(time.Second * 1)
 }
@@ -87,7 +106,6 @@ func initConnections() error {
 
 	nonOtherServers := 2
 	nServers = len(os.Args) - nonOtherServers
-	logicalClock = 0
 
 	/* the 2 remove the name (Process) and remove the fist port, in the case it is my port */
 	if nServers <= 0 {
@@ -95,18 +113,19 @@ func initConnections() error {
 	}
 
 	myId = os.Args[1]
-	//myPort = os.Args[2]
 	myPort = getMyPortNumber(os.Args[2], myId)
-	//fmt.Println(myPort)
+
+	idNum, err := strconv.Atoi(myId)
+	CheckError(err)
 
 	CliConn = make([]*net.UDPConn, nServers)
+	logicalClock = ClockStruct{Id: idNum, Clocks: make([]int, nServers)}
 
 	// Init client
 	for otherProcess := 0; otherProcess < nServers; otherProcess++ {
 		port := os.Args[otherProcess + nonOtherServers]
 
 		ServerAddr, err := net.ResolveUDPAddr("udp", port)
-		//fmt.Println(ServerAddr)
 		CheckError(err)
 
 		LocalAddr, err := net.ResolveUDPAddr("udp", "127.0.0.1:0")
@@ -136,7 +155,6 @@ func readInput(ch chan string) {
 }
 
 func main() {
-
 	e := initConnections()
 
 	if e != nil {
@@ -164,10 +182,10 @@ func main() {
 
 				destiny--
 				if destiny >= nServers {
-					err = errors.New("id out of range")
+					err = errors.New("Id out of range")
 					PrintError(err)
 				} else {
-					go doClientJob(destiny, logicalClock)
+					go doClientJob(destiny)
 				}
 			} else {
 				fmt.Println("Channel Closed!")
