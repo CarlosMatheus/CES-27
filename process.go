@@ -106,6 +106,7 @@ func initConnections() error {
 		port := os.Args[otherProcess + nonOtherServers]
 
 		ServerAddr, err := net.ResolveUDPAddr("udp", port)
+		//fmt.Println(ServerAddr)
 		CheckError(err)
 
 		LocalAddr, err := net.ResolveUDPAddr("udp", "127.0.0.1:0")
@@ -168,10 +169,6 @@ func main() {
 				} else {
 					go doClientJob(destiny, logicalClock)
 				}
-				//CheckError(err)
-				//for j := 0; j < nServers; j++ {
-				//	go doClientJob(j, 100)
-				//}
 			} else {
 				fmt.Println("Channel Closed!")
 			}
@@ -180,4 +177,3 @@ func main() {
 		}
 	}
 }
-
