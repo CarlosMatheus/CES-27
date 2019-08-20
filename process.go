@@ -17,6 +17,7 @@ var CliConn []*net.UDPConn
 var ServerConn *net.UDPConn // connection with my server (where I receive messages from others processes)
 var ch chan string
 var myId string
+var logicalClock int
 
 /* Simple function to verify error */
 func CheckError(err error) {
@@ -38,6 +39,19 @@ func doServerJob() {
 		n, addr, err := ServerConn.ReadFromUDP(buf)
 		fmt.Println("Received", string(buf[0:n]), " from ", addr)
 
+		logicalClockReceivedStr := string(buf[0:n])
+
+		logicalClockReceived, err := strconv.Atoi(logicalClockReceivedStr)
+		CheckError(err)
+
+		if logicalClockReceived > logicalClock {
+			logicalClock = logicalClockReceived
+		}
+
+		logicalClock++
+
+		fmt.Println("Current logical clock: ", logicalClock)
+
 		if err != nil {
 			fmt.Println("Error: ", err)
 		}
@@ -45,7 +59,7 @@ func doServerJob() {
 
 func doClientJob(otherProcess int, i int) {
 	msg := strconv.Itoa(i)
-	i++
+	//i++
 	buf := []byte(msg)
 	_, err := CliConn[otherProcess].Write(buf)
 	if err != nil {
@@ -73,6 +87,7 @@ func initConnections() error {
 
 	nonOtherServers := 2
 	nServers = len(os.Args) - nonOtherServers
+	logicalClock = 0
 
 	/* the 2 remove the name (Process) and remove the fist port, in the case it is my port */
 	if nServers <= 0 {
@@ -151,7 +166,7 @@ func main() {
 					err = errors.New("id out of range")
 					PrintError(err)
 				} else {
-					go doClientJob(destiny, 100)
+					go doClientJob(destiny, logicalClock)
 				}
 				//CheckError(err)
 				//for j := 0; j < nServers; j++ {
