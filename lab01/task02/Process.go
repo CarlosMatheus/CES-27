@@ -42,20 +42,15 @@ func PrintError(err error) {
 func doServerJob() {
 	buf := make([]byte, 1024)
 
-	n, addr, err := ServerConn.ReadFromUDP(buf[0:])
+	n, _, err := ServerConn.ReadFromUDP(buf[0:])
 	CheckError(err)
-	fmt.Println("Received", buf[:n], " from ", addr)
+	//fmt.Println("Received", buf[:n], " from ", addr)
 
 	var logicalClockReceived ClockStruct
-	//logicalClockReceived = ClockStruct{Id: 0, Clocks: make([]int, nServers)}
-	fmt.Println(n)
 	err = json.Unmarshal(buf[:n], &logicalClockReceived)
 	CheckError(err)
 
-	fmt.Println(logicalClockReceived)
-
 	for i := 0; i < nServers; i++ {
-		fmt.Println(logicalClockReceived.Clocks[i])
 		if logicalClockReceived.Clocks[i] > logicalClock.Clocks[i] {
 			logicalClock.Clocks[i] = logicalClockReceived.Clocks[i]
 		}
@@ -74,9 +69,7 @@ func doServerJob() {
 }
 
 func doClientJob(otherProcess int) {
-	fmt.Println("client", logicalClock)
 	jsonRequestByte, err := json.Marshal(logicalClock)
-	fmt.Println("client", jsonRequestByte)
 	CheckError(err)
 
 	buf := jsonRequestByte
