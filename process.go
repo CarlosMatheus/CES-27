@@ -13,9 +13,10 @@ import (
 var err string
 var myPort string
 var nServers int
-var CliConn []*net.UDPConn //
+var CliConn []*net.UDPConn
 var ServerConn *net.UDPConn // connection with my server (where I receive messages from others processes)
 var ch chan string
+var myId string
 
 /* Simple function to verify error */
 func CheckError(err error) {
@@ -53,27 +54,42 @@ func doClientJob(otherProcess int, i int) {
 	time.Sleep(time.Second * 1)
 }
 
-func initConnections() (error) {
+func getMyPortNumber(portArg string, myId string) string {
+	portNum, err := strconv.Atoi(portArg[1:])
+	CheckError(err)
 
+	idNum, err := strconv.Atoi(myId)
+	CheckError(err)
+
+	num := portNum - idNum + 1
+
+	newPortStr := strconv.Itoa(num)
+
+	return ":" + newPortStr
+}
+
+func initConnections() error {
 	ch  = make(chan string)
 
-	nServers = len(os.Args) - 2
+	nonOtherServers := 3
+	nServers = len(os.Args) - nonOtherServers
+
 	/* the 2 remove the name (Process) and remove the fist port, in the case it is my port */
 	if nServers <= 0 {
-		return errors.New("Insuficient number of servers")
+		return errors.New("insufficient number of servers")
 	}
 
-	myPort = os.Args[1]
+	myId = os.Args[1]
+	//myPort = os.Args[2]
+	myPort = getMyPortNumber(os.Args[2], myId)
+	//fmt.Println(myPort)
 
 	CliConn = make([]*net.UDPConn, nServers)
-
-	//ServerConn = make(*net.UDPConn)
-	//fmt.Println(nServers)
 
 	// Init client
 	for otherProcess := 0; otherProcess < nServers; otherProcess++ {
 
-		port := os.Args[otherProcess + 2]
+		port := os.Args[otherProcess +nonOtherServers]
 
 		ServerAddr, err := net.ResolveUDPAddr("udp", port)
 		CheckError(err)
@@ -84,13 +100,13 @@ func initConnections() (error) {
 		CliConn[otherProcess], err = net.DialUDP("udp", LocalAddr, ServerAddr)
 		CheckError(err)
 	}
+
 	// init server
 	ServerAddr, err := net.ResolveUDPAddr("udp", myPort)
 	CheckError(err)
 
 	ServerConn, err = net.ListenUDP("udp", ServerAddr)
 	CheckError(err)
-
 
 	return nil
 }
