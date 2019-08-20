@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"net"
@@ -14,10 +15,10 @@ var myPort string
 var nServers int
 var CliConn []*net.UDPConn //
 var ServerConn *net.UDPConn // connection with my server (where I receive messages from others processes)
+var ch chan string
 
 /* Simple function to verify error */
 func CheckError(err error) {
-	// same function used on the wordpress tutorial
 	if err != nil {
 		fmt.Println("Error: ", err)
 		os.Exit(0)
@@ -31,18 +32,6 @@ func PrintError(err error) {
 }
 
 func doServerJob() {
-	// read (one time ) the message from the UDP connection
-	// Write on the screen the received message ( indicate whether )
-
-	// Lets prepare an address at any address at port 10001
-	//ServerAddr, err := net.ResolveUDPAddr("udp", ":10001")
-	//CheckError(err)
-	//
-	//ServerConn, err = net.ListenUDP("udp", ServerAddr)
-	//CheckError(err)
-
-	//defer ServerConn.Close()
-
 	buf := make([]byte, 1024)
 
 		n, addr, err := ServerConn.ReadFromUDP(buf)
@@ -54,24 +43,6 @@ func doServerJob() {
 }
 
 func doClientJob(otherProcess int, i int) {
-	// Send message (with value i) to the server of the process other server
-	//addr := "127.0.0.1:" + strconv.Itoa(otherProcess + 10002)
-
-	//fmt.Println(addr)
-
-	//ServerAddr, err := net.ResolveUDPAddr("udp", addr)
-	//ServerAddr, err := net.ResolveUDPAddr("udp", ":10001")
-	//CheckError(err)
-	//
-	//LocalAddr, err := net.ResolveUDPAddr("udp", "127.0.0.1:0")
-	//CheckError(err)
-	//
-	//CliConn[otherProcess], err = net.DialUDP("udp", LocalAddr, ServerAddr)
-	//CheckError(err)
-
-	//defer CliConn[otherProcess].Close()
-	//idx := 0
-
 	msg := strconv.Itoa(i)
 	i++
 	buf := []byte(msg)
@@ -83,6 +54,9 @@ func doClientJob(otherProcess int, i int) {
 }
 
 func initConnections() (error) {
+
+	ch  = make(chan string)
+
 	nServers = len(os.Args) - 2
 	/* the 2 remove the name (Process) and remove the fist port, in the case it is my port */
 	if nServers <= 0 {
@@ -121,6 +95,15 @@ func initConnections() (error) {
 	return nil
 }
 
+func readInput(ch chan string) {
+	// Non-blocking async routine to listen for terminal input
+	reader := bufio.NewReader(os.Stdin)
+	for {
+		text, _, _ := reader.ReadLine()
+		ch <- string(text)
+	}
+}
+
 func main() {
 
 	e := initConnections()
@@ -136,20 +119,23 @@ func main() {
 		defer CliConn[i].Close()
 	}
 
-	i:=0
+	go readInput(ch)
 
 	for {
-		// server
 		go doServerJob()
 
-		// Client
-		for j := 0; j < nServers; j++ {
-			//fmt.Println("j", j)
-			go doClientJob(j, i)
-
-			// wait a while
+		select {
+		case x, valid := <-ch:
+			if valid {
+				fmt.Printf("Recebi do teclado: %s \n", x)
+				for j := 0; j < nServers; j++ {
+					go doClientJob(j, 100)
+				}
+			} else {
+				fmt.Println("Channel Closed!")
+			}
+		default:
 			time.Sleep(time.Second * 1)
-			i++
 		}
 	}
 }
