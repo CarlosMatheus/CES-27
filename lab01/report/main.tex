@@ -196,7 +196,56 @@ The test was made according to the model represented on Figure \ref{task2_exampl
 As expected, the logical clock on each process was updated to the bigger one, if the incomming message logical clock time was greater than the actual time on that process, and then it was also increased by one. This logic was applied and because of it the simulation on the terminals matched the model represented on Figure \ref{task2_example_model}.
 % ==============================
 
+\subsection*{Built Test Case}
+
+It was built a test case with 3 terminal windows, on each one was opened one task of the program as shown in the Code \ref{code_img_task2_built_case}.
+
+The test was made according to the model represented on Figure \ref{img_task2_built_case_model}. The results can be seen on the terminal windows shown from Figure \ref{img_task2_built_case_window1} to Figure \ref{img_task2_built_case_window3}.
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=3in]{./imgs/task2_built_case_model.png}
+  \caption{Model representing the execution of Task 2 built test case.}
+  \label{img_task2_built_case_model}
+  \end{center}
+\end{figure}
+
+\lstinputlisting[
+    language=python,
+    caption={Code that was run on each of the 3 terminal window on the execution of Task 2 built test case.},
+    label={code_img_task2_built_case},
+    style=cStyle,
+]{./code2.txt}
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=4.5in]{./imgs/task2_buit_test_window1.png}
+  \caption{Window 1 after execution of Task 2 built test case.}
+  \label{img_task2_built_case_window1}
+  \end{center}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=4.5in]{./imgs/task2_buit_test_window2.png}
+  \caption{Window 2 after execution of Task 2 built test case.}
+  \label{img_task2_built_case_window2}
+  \end{center}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=4.5in]{./imgs/task2_buit_test_window3.png}
+  \caption{Window 3 after execution of Task 2 built test case.}
+  \label{img_task2_built_case_window3}
+  \end{center}
+\end{figure}
+
+% need to change this part ==========
+As expected, the logical clock on each process was updated to the bigger one, if the incomming message logical clock time was greater than the actual time on that process, and then it was also increased by one. This logic was applied and because of it the simulation on the terminals matched the model represented on Figure \ref{img_task2_built_case_model}.
 % ==============================
+
+% ============================== HERE
 
 % \newpage
 % \bibliographystyle{plain}
