@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1566426950 "main.tex" "main.pdf" "main" 1566427033
+["pdflatex"] 1566428316 "main.tex" "main.pdf" "main" 1566428320
   "/usr/local/texlive/2018/texmf-dist/fonts/map/fontname/texfonts.map" 1511824771 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/local/texlive/2018/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm" 1480098701 1324 c910af8c371558dc20f2d7822f66fe64 ""
   "/usr/local/texlive/2018/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm" 1480098701 1528 abec98dbc43e172678c11b3b9031252a ""
@@ -68,9 +68,13 @@
   "imgs/task1_example_window1.png" 1566344760 131119 1ac56c5ee18cba719ab123ec6d0a3d70 ""
   "imgs/task1_example_window2.png" 1566344770 130380 6fc93a740792f071c3eace7800946fb6 ""
   "imgs/task1_example_window3.png" 1566344775 128795 14bc9bc3095cefa65bc1acb5d85e1bf1 ""
-  "main.aux" 1566426954 2003 e767c8f64a07d76f4164ff54ae179f37 ""
-  "main.tex" 1566427033 5213 4d635b5ca7d25e3372125c5405224524 ""
+  "imgs/task2_example_model.jpeg" 1566341179 15410 abe62ad19d553603ef4d9cd28e3bb9b5 ""
+  "imgs/task2_example_window1.png" 1566423926 132977 c77c57a433246968a2776d84c5d11a6a ""
+  "imgs/task2_example_window2.png" 1566423928 130946 c67d427d2696c8626b2b2ae5d6145915 ""
+  "imgs/task2_example_window3.png" 1566423933 129925 5756f03dd49a1401bd6f367c910dba4d ""
+  "main.aux" 1566428320 2910 ebd77a7208c171e7b3e3b8404301d106 ""
+  "main.tex" 1566428316 7254 4d966a8d4702cb90f3a92dc214481b76 ""
   (generated)
-  "main.aux"
   "main.log"
   "main.pdf"
+  "main.aux"
