@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1566345909 "main.tex" "main.pdf" "main" 1566345912
+["pdflatex"] 1566347543 "main.tex" "main.pdf" "main" 1566347545
   "/usr/local/texlive/2018/texmf-dist/fonts/map/fontname/texfonts.map" 1511824771 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/local/texlive/2018/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm" 1480098701 1324 c910af8c371558dc20f2d7822f66fe64 ""
   "/usr/local/texlive/2018/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm" 1480098701 1528 abec98dbc43e172678c11b3b9031252a ""
@@ -58,13 +58,15 @@
   "/usr/local/texlive/2018/texmf-var/web2c/pdftex/pdflatex.fmt" 1523934516 4220280 10cab8fbd7c5a7c52aba9917e190d018 ""
   "/usr/local/texlive/2018/texmf.cnf" 1523934483 577 0b39adfd7c93507ff20c9c14c2f1a33f ""
   "code1.txt" 1566343121 159 cbdeae3f149f844cb13e57cc52d4adbd ""
-  "imgs/example_task1_window1.png" 1566344760 131119 1ac56c5ee18cba719ab123ec6d0a3d70 ""
-  "imgs/example_task1_window2.png" 1566344770 130380 6fc93a740792f071c3eace7800946fb6 ""
-  "imgs/example_task1_window3.png" 1566344775 128795 14bc9bc3095cefa65bc1acb5d85e1bf1 ""
-  "imgs/scalar.jpeg" 1566341174 12012 2e003b9c2f63a3dc0e674cfdd07fac27 ""
-  "main.aux" 1566345911 913 ba1a42c5ac59dcd81e33432e5ff07426 ""
-  "main.tex" 1566345906 3063 dcc5cfcc58b44e189cc77e44fd23c739 ""
+  "code2.txt" 1566347524 240 627c674a52c289d21e45bf66d296c5ba ""
+  "imgs/task1_built_case_model.png" 1566346533 158889 407e4cf7f4f9e01833caffebf26bf5f8 ""
+  "imgs/task1_example_model.jpeg" 1566341174 12012 2e003b9c2f63a3dc0e674cfdd07fac27 ""
+  "imgs/task1_example_window1.png" 1566344760 131119 1ac56c5ee18cba719ab123ec6d0a3d70 ""
+  "imgs/task1_example_window2.png" 1566344770 130380 6fc93a740792f071c3eace7800946fb6 ""
+  "imgs/task1_example_window3.png" 1566344775 128795 14bc9bc3095cefa65bc1acb5d85e1bf1 ""
+  "main.aux" 1566347545 1824 4202d7266a7fedeb0a24c7d53233fdee ""
+  "main.tex" 1566347542 4953 67e4971262c37a6fb6b4e4eb88672a51 ""
   (generated)
-  "main.aux"
   "main.pdf"
+  "main.aux"
   "main.log"

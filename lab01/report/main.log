@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  20 AUG 2019 21:05
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  20 AUG 2019 21:32
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -83,7 +83,17 @@ File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
 File: listings.cfg 2015/06/04 1.6 listings configuration
 ))
 Package: listings 2015/06/04 1.6 (Carsten Heinz)
- (./main.aux)
+ (./main.aux
+
+LaTeX Warning: Label `img_task1_example_window1' multiply defined.
+
+
+LaTeX Warning: Label `img_task1_example_window2' multiply defined.
+
+
+LaTeX Warning: Label `img_task1_example_window3' multiply defined.
+
+)
 \openout1 = `main.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 30.
@@ -163,55 +173,90 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <9> on input line 40.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 40.
-<./imgs/scalar.jpeg, id=1, 509.905pt x 266.9975pt>
-File: ./imgs/scalar.jpeg Graphic file (type jpg)
-<use ./imgs/scalar.jpeg>
-Package pdftex.def Info: ./imgs/scalar.jpeg  used on input line 50.
+<./imgs/task1_example_model.jpeg, id=1, 509.905pt x 266.9975pt>
+File: ./imgs/task1_example_model.jpeg Graphic file (type jpg)
+<use ./imgs/task1_example_model.jpeg>
+Package pdftex.def Info: ./imgs/task1_example_model.jpeg  used on input line 50.
 (pdftex.def)             Requested size: 289.07999pt x 151.37534pt.
  (/usr/local/texlive/2018/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2015/06/04 1.6 listings language file
 ) (./code1.txt)
-<./imgs/example_task1_window1.png, id=2, 958.58125pt x 519.9425pt>
-File: ./imgs/example_task1_window1.png Graphic file (type png)
-<use ./imgs/example_task1_window1.png>
-Package pdftex.def Info: ./imgs/example_task1_window1.png  used on input line 65.
-(pdftex.def)             Requested size: 361.34999pt x 196.0014pt.
+<./imgs/task1_example_window1.png, id=2, 958.58125pt x 519.9425pt>
+File: ./imgs/task1_example_window1.png Graphic file (type png)
+<use ./imgs/task1_example_window1.png>
+Package pdftex.def Info: ./imgs/task1_example_window1.png  used on input line 65.
+(pdftex.def)             Requested size: 325.215pt x 176.3973pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./imgs/example_task1_window2.png, id=4, 958.58125pt x 519.9425pt>
-File: ./imgs/example_task1_window2.png Graphic file (type png)
-<use ./imgs/example_task1_window2.png>
-Package pdftex.def Info: ./imgs/example_task1_window2.png  used on input line 73.
-(pdftex.def)             Requested size: 361.34999pt x 196.0014pt.
+<./imgs/task1_example_window2.png, id=4, 958.58125pt x 519.9425pt>
+File: ./imgs/task1_example_window2.png Graphic file (type png)
+<use ./imgs/task1_example_window2.png>
+Package pdftex.def Info: ./imgs/task1_example_window2.png  used on input line 73.
+(pdftex.def)             Requested size: 325.215pt x 176.3973pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./imgs/example_task1_window3.png, id=5, 958.58125pt x 519.9425pt>
-File: ./imgs/example_task1_window3.png Graphic file (type png)
-<use ./imgs/example_task1_window3.png>
-Package pdftex.def Info: ./imgs/example_task1_window3.png  used on input line 81.
-(pdftex.def)             Requested size: 361.34999pt x 196.0014pt.
+<./imgs/task1_example_window3.png, id=5, 958.58125pt x 519.9425pt>
+File: ./imgs/task1_example_window3.png Graphic file (type png)
+<use ./imgs/task1_example_window3.png>
+Package pdftex.def Info: ./imgs/task1_example_window3.png  used on input line 81.
+(pdftex.def)             Requested size: 325.215pt x 176.3973pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[1
+<./imgs/task1_built_case_model.png, id=6, 944.52875pt x 774.895pt>
+File: ./imgs/task1_built_case_model.png Graphic file (type png)
+<use ./imgs/task1_built_case_model.png>
+Package pdftex.def Info: ./imgs/task1_built_case_model.png  used on input line 97.
+(pdftex.def)             Requested size: 216.81pt x 177.86739pt.
 
-{/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./imgs/scalar.jpeg>] [2 <./imgs/example_task1_window1.png> <./imgs/example_task1_window2.png>] [3 <./imgs/example_task1_window3.png>] (./main.aux) ) 
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+(./code2.txt [1
+
+{/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./imgs/task1_example_model.jpeg>])
+File: ./imgs/task1_example_window1.png Graphic file (type png)
+<use ./imgs/task1_example_window1.png>
+Package pdftex.def Info: ./imgs/task1_example_window1.png  used on input line 112.
+(pdftex.def)             Requested size: 325.215pt x 176.3973pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+File: ./imgs/task1_example_window2.png Graphic file (type png)
+<use ./imgs/task1_example_window2.png>
+Package pdftex.def Info: ./imgs/task1_example_window2.png  used on input line 120.
+(pdftex.def)             Requested size: 325.215pt x 176.3973pt.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+File: ./imgs/task1_example_window3.png Graphic file (type png)
+<use ./imgs/task1_example_window3.png>
+Package pdftex.def Info: ./imgs/task1_example_window3.png  used on input line 128.
+(pdftex.def)             Requested size: 325.215pt x 176.3973pt.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[2 <./imgs/task1_example_window1.png> <./imgs/task1_example_window2.png>] [3 <./imgs/task1_example_window3.png> <./imgs/task1_built_case_model.png>] [4] (./main.aux)
+
+LaTeX Warning: There were multiply-defined labels.
+
+ ) 
 Here is how much of TeX's memory you used:
- 3754 strings out of 492649
- 51495 string characters out of 6129622
- 154454 words of memory out of 5000000
- 7597 multiletter control sequences out of 15000+600000
+ 3764 strings out of 492649
+ 51819 string characters out of 6129622
+ 166509 words of memory out of 5000000
+ 7603 multiletter control sequences out of 15000+600000
  8847 words of font info for 31 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,8n,43p,363b,1238s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 41i,8n,43p,363b,1665s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on main.pdf (3 pages, 191063 bytes).
+Output written on main.pdf (4 pages, 267670 bytes).
 PDF statistics:
- 46 PDF objects out of 1000 (max. 8388607)
- 27 compressed objects within 1 object stream
+ 51 PDF objects out of 1000 (max. 8388607)
+ 29 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 21 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 26 words of extra memory for PDF output out of 10000 (max. 10000000)
 
