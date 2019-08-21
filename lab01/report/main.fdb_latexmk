@@ -1,12 +1,5 @@
 # Fdb version 3
-["bibtex main"] 1566345317 "main.aux" "main.bbl" "main" 1566345320
-  "/usr/local/texlive/2018/texmf-dist/bibtex/bst/base/plain.bst" 1480098433 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
-  "bibliography.bib" 1566340483 156 ac6ac44282276166c09e3a36ab8a046a ""
-  "main.aux" 1566345319 1002 d25c6802210e018e8475176a116aaa76 ""
-  (generated)
-  "main.bbl"
-  "main.blg"
-["pdflatex"] 1566345318 "main.tex" "main.pdf" "main" 1566345320
+["pdflatex"] 1566345909 "main.tex" "main.pdf" "main" 1566345912
   "/usr/local/texlive/2018/texmf-dist/fonts/map/fontname/texfonts.map" 1511824771 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/local/texlive/2018/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm" 1480098701 1324 c910af8c371558dc20f2d7822f66fe64 ""
   "/usr/local/texlive/2018/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm" 1480098701 1528 abec98dbc43e172678c11b3b9031252a ""
@@ -28,7 +21,6 @@
   "/usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb" 1480098733 32734 69e00a6b65cedb993666e42eedb3d48f ""
   "/usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb" 1480098733 32726 0a1aea6fcd6468ee2cf64d891f5c43c8 ""
   "/usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb" 1480098733 33993 9b89b85fd2d9df0482bd47194d1d3bf3 ""
-  "/usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1480098733 32569 5e5ddc8df908dea60932f3c484a54c0d ""
   "/usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb" 1480098733 37944 359e864bd06cde3b1cf57bb20757fb06 ""
   "/usr/local/texlive/2018/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1480098806 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "/usr/local/texlive/2018/texmf-dist/tex/generic/babel-english/english.ldf" 1496785618 7008 9ff5fdcc865b01beca2b0fe4a46231d4 ""
@@ -45,7 +37,6 @@
   "/usr/local/texlive/2018/texmf-dist/tex/generic/oberdiek/ltxcmds.sty" 1480098815 18425 5b3c0c59d76fac78978b5558e83c1f36 ""
   "/usr/local/texlive/2018/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty" 1522444781 20418 ca44694be1c8df491925faa194fe6edf ""
   "/usr/local/texlive/2018/texmf-dist/tex/latex/base/article.cls" 1523050425 19823 fcbc01552b07b608574cbf8e1977e0c0 ""
-  "/usr/local/texlive/2018/texmf-dist/tex/latex/base/omscmr.fd" 1523050425 2472 aa08940f0a4dc6c24ae9f943b04ae0b9 ""
   "/usr/local/texlive/2018/texmf-dist/tex/latex/base/size11.clo" 1523050425 8310 c914ded44e64c3c6e0ed92e7ac6a2004 ""
   "/usr/local/texlive/2018/texmf-dist/tex/latex/graphics-cfg/graphics.cfg" 1480098830 1224 978390e9c2234eab29404bc21b268d1e ""
   "/usr/local/texlive/2018/texmf-dist/tex/latex/graphics-def/pdftex.def" 1515537368 17334 520b9b85ad8a2a48eda3f643e27a5179 ""
@@ -71,10 +62,9 @@
   "imgs/example_task1_window2.png" 1566344770 130380 6fc93a740792f071c3eace7800946fb6 ""
   "imgs/example_task1_window3.png" 1566344775 128795 14bc9bc3095cefa65bc1acb5d85e1bf1 ""
   "imgs/scalar.jpeg" 1566341174 12012 2e003b9c2f63a3dc0e674cfdd07fac27 ""
-  "main.aux" 1566345319 1002 d25c6802210e018e8475176a116aaa76 ""
-  "main.bbl" 1566345318 187 4531978b8d2e9b9126df3e00f10b7f2b "bibtex main"
-  "main.tex" 1566345314 4043 e8bf0d4b2683207c8a147a010eb13513 ""
+  "main.aux" 1566345911 913 ba1a42c5ac59dcd81e33432e5ff07426 ""
+  "main.tex" 1566345906 3063 dcc5cfcc58b44e189cc77e44fd23c739 ""
   (generated)
+  "main.aux"
   "main.pdf"
   "main.log"
-  "main.aux"
