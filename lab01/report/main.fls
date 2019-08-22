@@ -134,7 +134,9 @@ INPUT ./imgs/task2_example_window2.png
 INPUT ./imgs/task2_example_window3.png
 INPUT ./imgs/task2_example_window3.png
 INPUT ./imgs/task2_example_window3.png
-INPUT /usr/local/texlive/2018/texmf-dist/fonts/tfm/public/cm/cmtt10.tfm
+INPUT ./imgs/task2_built_case_model.jpeg
+INPUT ./imgs/task2_built_case_model.jpeg
+INPUT ./imgs/task2_built_case_model.jpeg
 INPUT ./code2.txt
 INPUT ./code2.txt
 INPUT ./code2.txt
@@ -154,4 +156,3 @@ INPUT /usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb
 INPUT /usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb
 INPUT /usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb
 INPUT /usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb
-INPUT /usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb
