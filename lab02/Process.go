@@ -78,12 +78,16 @@ func doServerJob() {
 }
 
 func doClientJob(otherProcess int) {
+
+	//fmt.Println("a")
+
 	jsonRequestByte, err := json.Marshal(logicalClock)
 	CheckError(err)
 
 	buf := jsonRequestByte
 	_, err = CliConn[otherProcess].Write(buf)
 	if err != nil {
+		fmt.Println("error")
 		fmt.Println(jsonRequestByte, err)
 	}
 	time.Sleep(time.Second * 1)
@@ -96,7 +100,7 @@ func getMyPortNumber(portArg string, myId string) string {
 	idNum, err := strconv.Atoi(myId)
 	CheckError(err)
 
-	num := portNum - idNum + 1
+	num := portNum + idNum - 1
 
 	newPortStr := strconv.Itoa(num)
 
@@ -116,6 +120,8 @@ func initConnections() error {
 
 	myId = os.Args[1]
 	myPort = getMyPortNumber(os.Args[2], myId)
+
+	//fmt.Println(myId)
 
 	idNum, err := strconv.Atoi(myId)
 	CheckError(err)
@@ -139,6 +145,7 @@ func initConnections() error {
 	}
 
 	// init server
+	//fmt.Print(myPort)
 	ServerAddr, err := net.ResolveUDPAddr("udp", myPort)
 	CheckError(err)
 
