@@ -15,12 +15,8 @@ type ClockStruct struct {
 	Id     int
 	Clock  int
 	Message string
+	Request bool
 }
-
-//type ClockStruct struct {
-//	Id     int
-//	Clocks []int
-//}
 
 var err string
 var myPort string
@@ -30,6 +26,9 @@ var ServerConn *net.UDPConn
 var ch chan string
 var myId string
 var logicalClock ClockStruct
+var heldCS bool
+var allowedRequest []bool
+var timeOut int
 
 /* Simple function to verify error */
 func CheckError(err error) {
@@ -46,34 +45,73 @@ func PrintError(err error) {
 }
 
 func doServerJob() {
-	buf := make([]byte, 1024)
+	if !heldCS {
+		buf := make([]byte, 1024)
 
-	n, _, err := ServerConn.ReadFromUDP(buf[0:])
-	CheckError(err)
-	//fmt.Println("Received", buf[:n], " from ", addr)
+		n, _, err := ServerConn.ReadFromUDP(buf[0:])
+		CheckError(err)
+		//fmt.Println("Received", buf[:n], " from ", addr)
 
-	var logicalClockReceived ClockStruct
-	err = json.Unmarshal(buf[:n], &logicalClockReceived)
-	CheckError(err)
+		var logicalClockReceived ClockStruct
+		err = json.Unmarshal(buf[:n], &logicalClockReceived)
+		CheckError(err)
 
-	if logicalClockReceived.Clock > logicalClock.Clock {
-		logicalClock.Clock = logicalClockReceived.Clock
+		if logicalClockReceived.Clock > logicalClock.Clock {
+			logicalClock.Clock = logicalClockReceived.Clock
+		}
+		logicalClock.Request = logicalClockReceived.Request
+		receivedId := logicalClockReceived.Id
+
+		if logicalClock.Request {
+			logicalClock.Message = logicalClockReceived.Message
+
+			logicalClock.Clock++
+
+			fmt.Println("Current logical Clock: ", logicalClock.Clock)
+			fmt.Println("Received request message: ", logicalClock.Message)
+
+			answerBack(logicalClock.Message, receivedId)
+			//broadcastMessage(logicalClock.Message, false)
+		} else {
+			fmt.Println("Received answer message", logicalClockReceived.Message, "from", receivedId)
+
+			receivedIdx := receivedId - 1
+			allowedRequest[receivedIdx] = true
+
+			if checkAllowed(allowedRequest) {
+				go holdCS()
+			}
+		}
 	}
+}
 
-	logicalClock.Message = logicalClockReceived.Message
+func holdCS() {
+	heldCS = true
+	fmt.Println("Now this application holds the CS")
 
-	//idNum, err := strconv.Atoi(myId)
-	CheckError(err)
+	time.Sleep(time.Second * 5)  // timeout
 
-	//logicalClock.Clocks[idNum - 1]++
-	logicalClock.Clock++
+	heldCS = false
+	fmt.Println("Freed the CS")
+}
 
-	//fmt.Println("Current logical Clocks: ", logicalClock.Clocks)
-	fmt.Println("Current logical Clock: ", logicalClock.Clock)
-	fmt.Println("Received message: ", logicalClock.Message)
+func checkAllowed(allowedRequest []bool) bool {
+	for i := 0; i < nServers; i++ {
+		if allowedRequest[i] == false {
+			return false
+		}
+	}
+	return true
+}
 
-	if err != nil {
-		fmt.Println("Error: ", err)
+func verifyWhoHolds() {
+	time.Sleep(time.Second * 3)  // timeout
+	if !checkAllowed(allowedRequest) {
+		for i := 0; i < nServers; i++ {
+			if allowedRequest[i] == false {
+				fmt.Printf("Servers that holds CS: %d \n", i+1)
+			}
+		}
 	}
 }
 
@@ -109,6 +147,7 @@ func getMyPortNumber(portArg string, myId string) string {
 func initConnections() error {
 	ch  = make(chan string)
 
+	timeOut = 3
 	nonOtherServers := 2
 	nServers = len(os.Args) - nonOtherServers
 
@@ -120,14 +159,12 @@ func initConnections() error {
 	myId = os.Args[1]
 	myPort = getMyPortNumber(os.Args[2], myId)
 
-	//fmt.Println(myId)
-
 	idNum, err := strconv.Atoi(myId)
 	CheckError(err)
 
 	CliConn = make([]*net.UDPConn, nServers)
-	//logicalClock = ClockStruct{Id: idNum, Clocks: make([]int, nServers)}
-	logicalClock = ClockStruct{Id: idNum, Clock: 0, Message: ""}
+	logicalClock = ClockStruct{Id: idNum, Clock: 0, Message: "", Request: false}
+	allowedRequest = make([]bool, nServers)
 
 	// Init client
 	for otherProcess := 0; otherProcess < nServers; otherProcess++ {
@@ -144,18 +181,21 @@ func initConnections() error {
 	}
 
 	// init server
-	//fmt.Print(myPort)
 	ServerAddr, err := net.ResolveUDPAddr("udp", myPort)
 	CheckError(err)
 
 	ServerConn, err = net.ListenUDP("udp", ServerAddr)
 	CheckError(err)
 
+	heldCS = false
+
 	return nil
 }
 
 func readInput(ch chan string) {
-	// Non-blocking async routine to listen for terminal input
+	/*
+		Non-blocking async routine to listen for terminal input
+	*/
 
 	reader := bufio.NewReader(os.Stdin)
 	for {
@@ -165,29 +205,38 @@ func readInput(ch chan string) {
 
 }
 
-func broadcastMessage(message string){
+func broadcastMessage(message string, request bool){
 	idNum, err := strconv.Atoi(myId)
-	if err != nil {
-		PrintError(err)
-	}
+	CheckError(err)
+
 	logicalClock.Message = message
+	logicalClock.Request = request
+
+	if request {
+		allowedRequest = make([]bool, 5)
+		allowedRequest[idNum - 1] = true
+	}
+
 	for i := 0; i < nServers; i++ {
 		if i+1 != idNum {
 			go doClientJob(i)
 		}
 	}
+	go verifyWhoHolds()
+}
+
+func answerBack(message string, receivedId int){
+	logicalClock.Message = message
+	logicalClock.Request = false
+	go doClientJob(receivedId - 1)
 }
 
 func main() {
 	e := initConnections()
+	CheckError(e)
 
-	if e != nil {
-		fmt.Println(e)
-		return
-	}
-
+	/*  close all connections at the end of this function  */
 	defer ServerConn.Close()
-
 	for i := 0; i < nServers; i++ {
 		defer CliConn[i].Close()
 	}
@@ -196,17 +245,16 @@ func main() {
 
 	for {
 		go doServerJob()
-
 		select {
-		case message, valid := <-ch:
-			if valid {
-				fmt.Printf("Message: %s \n", message)
-				broadcastMessage(message)
-			} else {
-				fmt.Println("Channel Closed!")
-			}
-		default:
-			time.Sleep(time.Second * 1)
+			case message, valid := <-ch:
+				if valid {
+					fmt.Printf("Message: %s \n", message)
+					broadcastMessage(message, true)
+				} else {
+					fmt.Println("Channel Closed!")
+				}
+			default:
+				time.Sleep(time.Second * 1)
 		}
 	}
 }
