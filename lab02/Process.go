@@ -56,13 +56,11 @@ func doServerJob() {
 	err = json.Unmarshal(buf[:n], &logicalClockReceived)
 	CheckError(err)
 
-	for i := 0; i < nServers; i++ {
-		//if logicalClockReceived.Clocks[i] > logicalClock.Clocks[i] {
-		if logicalClockReceived.Clock > logicalClock.Clock {
-			logicalClock.Clock = logicalClockReceived.Clock
-			//logicalClock.Clocks[i] = logicalClockReceived.Clocks[i]
-		}
+	if logicalClockReceived.Clock > logicalClock.Clock {
+		logicalClock.Clock = logicalClockReceived.Clock
 	}
+
+	logicalClock.Message = logicalClockReceived.Message
 
 	//idNum, err := strconv.Atoi(myId)
 	CheckError(err)
@@ -72,6 +70,7 @@ func doServerJob() {
 
 	//fmt.Println("Current logical Clocks: ", logicalClock.Clocks)
 	fmt.Println("Current logical Clock: ", logicalClock.Clock)
+	fmt.Println("Received message: ", logicalClock.Message)
 
 	if err != nil {
 		fmt.Println("Error: ", err)
