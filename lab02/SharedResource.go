@@ -14,12 +14,8 @@ import (
 type ClockStruct struct {
 	Id     int
 	Clock  int
+	Message string
 }
-
-//type ClockStruct struct {
-//	Id     int
-//	Clocks []int
-//}
 
 var err string
 var myPort string
@@ -124,7 +120,7 @@ func initConnections() error {
 
 	CliConn = make([]*net.UDPConn, nServers)
 	//logicalClock = ClockStruct{Id: idNum, Clocks: make([]int, nServers)}
-	logicalClock = ClockStruct{Id: idNum, Clock: 0}
+	logicalClock = ClockStruct{Id: idNum, Clock: 0, Message: ""}
 
 	// Init client
 	for otherProcess := 0; otherProcess < nServers; otherProcess++ {
