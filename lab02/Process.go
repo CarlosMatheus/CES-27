@@ -22,6 +22,7 @@ var err string
 var myPort string
 var nServers int
 var CliConn []*net.UDPConn
+var CSCliConn *net.UDPConn
 var ServerConn *net.UDPConn
 var ch chan string
 var myId string
@@ -30,8 +31,10 @@ var heldCS bool
 var allowedRequest []bool
 var timeOut int
 
-/* Simple function to verify error */
 func CheckError(err error) {
+	/*
+		Simple function to verify error
+	*/
 	if err != nil {
 		fmt.Println("Error: ", err)
 		os.Exit(0)
@@ -45,23 +48,22 @@ func PrintError(err error) {
 }
 
 func doServerJob() {
+	buf := make([]byte, 1024)
+
+	n, _, err := ServerConn.ReadFromUDP(buf[0:])
+	CheckError(err)
+
+	var logicalClockReceived ClockStruct
+	err = json.Unmarshal(buf[:n], &logicalClockReceived)
+	CheckError(err)
+
+	if logicalClockReceived.Clock > logicalClock.Clock {
+		logicalClock.Clock = logicalClockReceived.Clock
+	}
+	logicalClock.Request = logicalClockReceived.Request
+	receivedId := logicalClockReceived.Id
+
 	if !heldCS {
-		buf := make([]byte, 1024)
-
-		n, _, err := ServerConn.ReadFromUDP(buf[0:])
-		CheckError(err)
-		//fmt.Println("Received", buf[:n], " from ", addr)
-
-		var logicalClockReceived ClockStruct
-		err = json.Unmarshal(buf[:n], &logicalClockReceived)
-		CheckError(err)
-
-		if logicalClockReceived.Clock > logicalClock.Clock {
-			logicalClock.Clock = logicalClockReceived.Clock
-		}
-		logicalClock.Request = logicalClockReceived.Request
-		receivedId := logicalClockReceived.Id
-
 		if logicalClock.Request {
 			logicalClock.Message = logicalClockReceived.Message
 
@@ -79,20 +81,23 @@ func doServerJob() {
 			allowedRequest[receivedIdx] = true
 
 			if checkAllowed(allowedRequest) {
-				go holdCS()
+				go holdCS(logicalClockReceived.Message)
 			}
 		}
+	} else {
+		fmt.Println(logicalClockReceived.Message, "ignorado")
 	}
 }
 
-func holdCS() {
+func holdCS(message string) {
 	heldCS = true
-	fmt.Println("Now this application holds the CS")
+	fmt.Println("Entrei na CS")
 
+	answerBack(message, 0)
 	time.Sleep(time.Second * 5)  // timeout
 
 	heldCS = false
-	fmt.Println("Freed the CS")
+	fmt.Println("Sai da CS")
 }
 
 func checkAllowed(allowedRequest []bool) bool {
@@ -121,8 +126,12 @@ func doClientJob(otherProcess int) {
 	CheckError(err)
 
 	buf := jsonRequestByte
-	fmt.Println(otherProcess)
-	_, err = CliConn[otherProcess].Write(buf)
+
+	if otherProcess == -1 {
+		_, err = CSCliConn.Write(buf)
+	} else {
+		_, err = CliConn[otherProcess].Write(buf)
+	}
 	if err != nil {
 		fmt.Println("error")
 		fmt.Println(jsonRequestByte, err)
@@ -180,8 +189,17 @@ func initConnections() error {
 		CheckError(err)
 	}
 
+	ServerAddr, err := net.ResolveUDPAddr("udp", ":10001")
+	CheckError(err)
+
+	LocalAddr, err := net.ResolveUDPAddr("udp", "127.0.0.1:0")
+	CheckError(err)
+
+	CSCliConn, err = net.DialUDP("udp", LocalAddr, ServerAddr)
+	CheckError(err)
+
 	// init server
-	ServerAddr, err := net.ResolveUDPAddr("udp", myPort)
+	ServerAddr, err = net.ResolveUDPAddr("udp", myPort)
 	CheckError(err)
 
 	ServerConn, err = net.ListenUDP("udp", ServerAddr)

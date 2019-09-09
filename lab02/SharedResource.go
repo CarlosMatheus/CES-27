@@ -15,6 +15,7 @@ type ClockStruct struct {
 	Id     int
 	Clock  int
 	Message string
+	Request bool
 }
 
 var err string
@@ -41,33 +42,23 @@ func PrintError(err error) {
 }
 
 func doServerJob() {
-
 	buf := make([]byte, 1024)
 
 	n, _, err := ServerConn.ReadFromUDP(buf[0:])
 	CheckError(err)
-	//fmt.Println("Received", buf[:n], " from ", addr)
 
 	var logicalClockReceived ClockStruct
 	err = json.Unmarshal(buf[:n], &logicalClockReceived)
 	CheckError(err)
 
-	for i := 0; i < nServers; i++ {
-		//if logicalClockReceived.Clocks[i] > logicalClock.Clocks[i] {
-		if logicalClockReceived.Clock > logicalClock.Clock {
-			logicalClock.Clock = logicalClockReceived.Clock
-			//logicalClock.Clocks[i] = logicalClockReceived.Clocks[i]
-		}
+	if logicalClockReceived.Clock > logicalClock.Clock {
+		logicalClock.Clock = logicalClockReceived.Clock
 	}
 
-	//idNum, err := strconv.Atoi(myId)
-	CheckError(err)
-
-	//logicalClock.Clocks[idNum - 1]++
 	logicalClock.Clock++
 
-	//fmt.Println("Current logical Clocks: ", logicalClock.Clocks)
-	fmt.Println("Current logical Clock: ", logicalClock.Clock)
+	fmt.Println("Current logical Clock:", logicalClock.Clock)
+	fmt.Println("Received", logicalClockReceived.Message)
 
 	if err != nil {
 		fmt.Println("Error: ", err)
@@ -102,26 +93,11 @@ func getMyPortNumber(portArg string, myId string) string {
 
 func initConnections() error {
 	ch  = make(chan string)
-
 	nonOtherServers := 2
-	// In order to it connect with others it still receiving this (not sure if it is necessary)
 	nServers = len(os.Args) - nonOtherServers
-
-	/* the 2 remove the name (Process) and remove the fist port, in the case it is my port */
-	//if nServers <= 0 {
-	//	return errors.New("insufficient number of servers")
-	//}
-
-	//myId = "1"
-	//myPort = getMyPortNumber(os.Args[2], myId)
 	myPort = ":10001"
-
-	//idNum, err := strconv.Atoi(myId)
-	CheckError(err)
-
 	CliConn = make([]*net.UDPConn, nServers)
-	//logicalClock = ClockStruct{Id: idNum, Clocks: make([]int, nServers)}
-	logicalClock = ClockStruct{Id: idNum, Clock: 0, Message: ""}
+	logicalClock = ClockStruct{Id: 0, Clock: 0, Message: "", Request: false}
 
 	// Init client
 	for otherProcess := 0; otherProcess < nServers; otherProcess++ {
@@ -174,26 +150,25 @@ func main() {
 
 	for {
 		go doServerJob()
-
 		select {
-		case x, valid := <-ch:
-			if valid {
-				fmt.Printf("Destiny Id: %s \n", x)
-				destiny, err := strconv.Atoi(x)
-				CheckError(err)
+			case x, valid := <-ch:
+				if valid {
+					fmt.Printf("Destiny Id: %s \n", x)
+					destiny, err := strconv.Atoi(x)
+					CheckError(err)
 
-				destiny--
-				if destiny >= nServers {
-					err = errors.New("Id out of range")
-					PrintError(err)
+					destiny--
+					if destiny >= nServers {
+						err = errors.New("Id out of range")
+						PrintError(err)
+					} else {
+						go doClientJob(destiny)
+					}
 				} else {
-					go doClientJob(destiny)
+					fmt.Println("Channel Closed!")
 				}
-			} else {
-				fmt.Println("Channel Closed!")
-			}
-		default:
-			time.Sleep(time.Second * 1)
+			default:
+				time.Sleep(time.Second * 1)
 		}
 	}
 }
