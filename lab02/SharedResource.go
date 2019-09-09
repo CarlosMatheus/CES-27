@@ -104,6 +104,7 @@ func initConnections() error {
 	ch  = make(chan string)
 
 	nonOtherServers := 2
+	// In order to it connect with others it still receiving this (not sure if it is necessary)
 	nServers = len(os.Args) - nonOtherServers
 
 	/* the 2 remove the name (Process) and remove the fist port, in the case it is my port */

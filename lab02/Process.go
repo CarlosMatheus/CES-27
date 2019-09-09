@@ -80,12 +80,11 @@ func doServerJob() {
 
 func doClientJob(otherProcess int) {
 
-	//fmt.Println("a")
-
 	jsonRequestByte, err := json.Marshal(logicalClock)
 	CheckError(err)
 
 	buf := jsonRequestByte
+	fmt.Println(otherProcess)
 	_, err = CliConn[otherProcess].Write(buf)
 	if err != nil {
 		fmt.Println("error")
@@ -158,10 +157,25 @@ func initConnections() error {
 
 func readInput(ch chan string) {
 	// Non-blocking async routine to listen for terminal input
+
 	reader := bufio.NewReader(os.Stdin)
 	for {
 		text, _, _ := reader.ReadLine()
 		ch <- string(text)
+	}
+
+}
+
+func broadcastMessage(message string){
+	idNum, err := strconv.Atoi(myId)
+	if err != nil {
+		PrintError(err)
+	}
+	logicalClock.Message = message
+	for i := 0; i < nServers; i++ {
+		if i+1 != idNum {
+			go doClientJob(i)
+		}
 	}
 }
 
@@ -185,19 +199,10 @@ func main() {
 		go doServerJob()
 
 		select {
-		case x, valid := <-ch:
+		case message, valid := <-ch:
 			if valid {
-				fmt.Printf("Destiny Id: %s \n", x)
-				destiny, err := strconv.Atoi(x)
-				CheckError(err)
-
-				destiny--
-				if destiny >= nServers {
-					err = errors.New("Id out of range")
-					PrintError(err)
-				} else {
-					go doClientJob(destiny)
-				}
+				fmt.Printf("Message: %s \n", message)
+				broadcastMessage(message)
 			} else {
 				fmt.Println("Channel Closed!")
 			}
