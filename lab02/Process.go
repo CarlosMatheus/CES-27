@@ -56,7 +56,8 @@ func handleRequestMessage(logicalClockReceived ClockStruct, receivedId int) {
 	idNumber, err := strconv.Atoi(myId)
 	CheckError(err)
 
-	fmt.Println("Received a request message: ", logicalClock.Message)
+	//fmt.Println("Received a request message: ", logicalClock.Message)
+	printRequestMessage(logicalClockReceived)
 
 	if !wanting {
 		replyBack(logicalClock.Message, receivedId)
@@ -75,12 +76,17 @@ func handleRequestMessage(logicalClockReceived ClockStruct, receivedId int) {
 	}
 }
 
+func printReplyMessage(logicalClockReceived ClockStruct, receivedId int)  {
+	printClock(logicalClock.Clock)
+	fmt.Println("Received reply message \"", logicalClockReceived.Message, "\" from process:", receivedId, "at clock", logicalClock.Clock)
+}
+
 func handleReplyMessage(logicalClockReceived ClockStruct, receivedId int) {
 	if !wanting {
 		err := errors.New("A process cannot receive a reply message while it is in released state")
 		CheckError(err)
 	} else {
-		fmt.Println("Received reply message \"", logicalClockReceived.Message, "\" from process:", receivedId)
+		printReplyMessage(logicalClockReceived, receivedId)
 
 		receivedIdx := receivedId - 1
 		allowedRequest[receivedIdx] = true
@@ -102,17 +108,28 @@ func executeReceiveMessage(logicalClockReceived ClockStruct, receivedId int) {
 		if logicalClock.Request {
 			addProcessToQueue(logicalClockReceived)
 		} else {
+			printReplyMessage(logicalClockReceived, receivedId)
 			err := errors.New("Process cannot receive a reply message while in Held state")
 			CheckError(err)
 		}
 	}
 }
 
+func printClock(clock int) {
+	fmt.Print(fmt.Sprintf("[%02d] ", clock))
+}
+
+func printRequestMessage(logicalClockReceived ClockStruct) {
+	printClock(logicalClock.Clock)
+	fmt.Println("Received request message \"", logicalClockReceived.Message, "\" from process:", logicalClockReceived.Id, "at clock", logicalClock.Clock)
+}
+
 func addProcessToQueue(logicalClockReceived ClockStruct) {
 	heldQueue = append(heldQueue, logicalClockReceived)
 	// todo: shoud increase clock cicle ?
-	fmt.Println("Received reply message \"", logicalClockReceived.Message, "\" from process:", logicalClockReceived.Id)
-	fmt.Println(logicalClockReceived.Clock, "Received clock")
+	executeClockCycle()
+	printRequestMessage(logicalClockReceived)
+	//fmt.Println(logicalClockReceived.Clock, "Received clock")
 }
 
 func doServerJob() {
@@ -142,12 +159,14 @@ func holdCS(message string) {
 	holding = true
 	wanting = false
 
-	fmt.Println("Entrei na CS")
+	printClock(logicalClock.Clock)
+	fmt.Println("Entrei na CS", "at clock", logicalClock.Clock)
 
 	replyBack(message, 0)
-	time.Sleep(time.Second * 10)  // time on critical section
+	time.Sleep(time.Second * 15)  // time on critical section
 
-	fmt.Println("Sai da CS")
+	printClock(logicalClock.Clock)
+	fmt.Println("Sai da CS", "at clock", logicalClock.Clock)
 
 	holding = false
 	wanting = false
@@ -300,6 +319,7 @@ func broadcastMessage(message string, request bool){
 }
 
 func executeInternalAction() {
+	printClock(logicalClock.Clock)
 	fmt.Println("Executing internal action")
 	executeClockCycle()
 }
@@ -310,6 +330,7 @@ func broadCastRequestMessage() {
 			Received an improper message
 		 */
 		executeClockCycle()
+		printClock(logicalClock.Clock)
 		fmt.Println("\"", messageToSend, "\" ignorado")
 	} else {
 		if messageToSend == myId {
@@ -319,6 +340,7 @@ func broadCastRequestMessage() {
 
 			executeClockCycle()
 
+			printClock(logicalClock.Clock)
 			fmt.Printf("Message: %s \n", messageToSend)
 
 			broadcastMessage(messageToSend, true)
@@ -355,6 +377,7 @@ func main() {
 				if valid {
 					broadCastRequestMessage()
 				} else {
+					printClock(logicalClock.Clock)
 					fmt.Println("Channel Closed!")
 				}
 			default:

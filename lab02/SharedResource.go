@@ -20,6 +20,10 @@ var err string
 var ServerConn *net.UDPConn
 var ch chan string
 
+func printClock(clock int) {
+	fmt.Printf("[%02d] ", clock)
+}
+
 func CheckError(err error) {
 	/*
 		Simple function to verify error
@@ -40,9 +44,13 @@ func doServerJob() {
 	err = json.Unmarshal(buf[:n], &logicalClockReceived)
 	CheckError(err)
 
-	fmt.Println("Received logical Clock:", logicalClockReceived.Clock)
-	fmt.Println("Received", logicalClockReceived.Message)
+	logicalClock := logicalClockReceived.Clock
+	logicalClock++
 
+	printClock(logicalClock)
+	fmt.Println("Received logical Clock:", logicalClockReceived.Clock)
+	printClock(logicalClock)
+	fmt.Println("Received", logicalClockReceived.Message)
 }
 
 func initConnections() error {
