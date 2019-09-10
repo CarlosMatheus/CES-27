@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1568155889 "main.tex" "main.pdf" "main" 1568155946
+["pdflatex"] 1568156473 "main.tex" "main.pdf" "main" 1568156478
   "/usr/local/texlive/2018/texmf-dist/fonts/map/fontname/texfonts.map" 1511824771 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/local/texlive/2018/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm" 1480098701 1324 c910af8c371558dc20f2d7822f66fe64 ""
   "/usr/local/texlive/2018/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm" 1480098701 1528 abec98dbc43e172678c11b3b9031252a ""
@@ -59,6 +59,7 @@
   "imgs/case1.png" 1568154109 24945 b613bf4b4714ef3b103b2ba02f4bced9 ""
   "imgs/case1CS.png" 1568154059 125263 92fd7812797de265d86c7000aac4fb08 ""
   "imgs/case1process1.png" 1568154051 132496 53a477a1a887118c881a52fca6ea2137 ""
+  "imgs/case1process2.png" 1568154054 131680 ad0ece47a58f39d28a187bb9b6455bd0 ""
   "imgs/case2.png" 1568154358 94045 9eee4ee8537f25b3f814de68b75a66d5 ""
   "imgs/case2CS.png" 1568152509 361900 e10a4a0f14aba6c3945e856ce2776bea ""
   "imgs/case2process1.png" 1568152479 150545 f7c08122b3dbd6e5e1c2f739a8694fcb ""
@@ -66,9 +67,9 @@
   "imgs/case2process3.png" 1568152489 132292 43e3ddbc509614a824a910dd507843fc ""
   "imgs/case2process4.png" 1568152495 364735 303017bdffc0165865ade14e6b5f94eb ""
   "imgs/case2process5.png" 1568152504 315922 af5c287be5512b1ea258fa84edef53c5 ""
-  "main.aux" 1568155895 1928 04253b86248f7909d87a730de38d59e6 ""
-  "main.tex" 1568155945 5024 e93085397b7d4b4e0a3e5ca7ad0d826d ""
+  "main.aux" 1568156477 1928 04253b86248f7909d87a730de38d59e6 ""
+  "main.tex" 1568156472 5015 a77c7228fb510845d764eba991a66a11 ""
   (generated)
-  "main.pdf"
   "main.log"
+  "main.pdf"
   "main.aux"

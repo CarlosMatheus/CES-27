@@ -37,11 +37,11 @@ Carlos Matheus Barros da Silva \hfill September 2019
 
 \section*{2th Activity}
 
-It was implemented the Ricart-Agrawala's algorithm. The implementation was made in Go and it can be seen on the Repository\footnote{https://github.com/CarlosMatheus/CES-27/tree/master/lab02}.
+It was implemented the Ricart-Agrawala's algorithm. The implementation was made in Go, and it can be seen on the repository\footnote{https://github.com/CarlosMatheus/CES-27/tree/master/lab02}.
 
 \section*{First Case}
 
-As It was suggested, it was conducted a test with 3 terminal windows, on two of them were open the process and on the third one was open the shared process.
+The first test was conducted with 3 terminal windows on two of them were open the process and on the third one was open the shared process.
 
 The test was made according to the model represented on Figure \ref{img_task1}. The results can be seen on the terminal windows shown from Figure \ref{img_task1_example_window1} to Figure \ref{img_task1_example_window3}.
 
@@ -63,7 +63,7 @@ The test was made according to the model represented on Figure \ref{img_task1}. 
 
 \begin{figure}[h]
   \begin{center}
-  \includegraphics[width=4.5in]{./imgs/case1process1.png}
+  \includegraphics[width=4.5in]{./imgs/case1process2.png}
   \caption{Process 2 after execution of Case 1 example test case.}
   \label{img_task1_example_window2}
   \end{center}
@@ -77,11 +77,11 @@ The test was made according to the model represented on Figure \ref{img_task1}. 
   \end{center}
 \end{figure}
 
-As expected, the mutual exclusion woked; thus, when a process request access the other reply allowing the access when it is on \textit{released} state, then the first process accesses the shared resource. When it finishes, it returns to released state. Then the the second process do the same steps. All the logic worked as well as the logical clocks on each process, therefore the simulation on the terminals matched the model representd on Figure \ref{img_task1}.
+As expected, the mutual exclusion worked; thus, when a process request access the other reply allowing the access when it is on \textit{released} state, then the first process accesses the shared resource. When it finishes, it returns to released state. Then the second process does the same steps. All the logic worked as well as the logical clocks on each process; therefore, the simulation on the terminals matched the model represented in Figure \ref{img_task1}.
 
 \section*{Second Case}
 
-It was built a test case with 6 terminal windows. The test was made according to the model represented on Figure \ref{img_task2}. The results can be seen on the terminal windows shown from Figure \ref{img_task2_example_window1} to Figure \ref{img_task2_example_window6}.
+It was built a test case with 6 terminal windows. The test was made according to the model represented in Figure \ref{img_task2}. The results can be seen on the terminal windows shown from Figure \ref{img_task2_example_window1} to Figure \ref{img_task2_example_window6}.
 
 \begin{figure}[h]
   \begin{center}
@@ -139,7 +139,7 @@ It was built a test case with 6 terminal windows. The test was made according to
   \end{center}
 \end{figure}
 
-As expected, the mutual exclusion woked; Even when multiple process were wanting to access the shared resource at the same time, the mutual exclusion garanteed the safity and the lifeness of the operation. All the logic worked as well as the logical clocks on each process, therefore the simulation on the terminals matched the model representd on Figure \ref{img_task1}.
+As expected, the mutual exclusion worked; Even when multiple processes were wanting to access the shared resource at the same time, the mutual exclusion guaranteed the safety and the liveness of the operation. All the logic worked as well as the logical clocks on each process; therefore, the simulation on the terminals matched the model represented in Figure \ref{img_task2}.
 
 
 \end{document}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  10 SEP 2019 19:51
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  10 SEP 2019 20:01
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -173,15 +173,16 @@ File: ./imgs/case1process1.png Graphic file (type png)
 <use ./imgs/case1process1.png>
 Package pdftex.def Info: ./imgs/case1process1.png  used on input line 58.
 (pdftex.def)             Requested size: 325.215pt x 171.61133pt.
-File: ./imgs/case1process1.png Graphic file (type png)
-<use ./imgs/case1process1.png>
-Package pdftex.def Info: ./imgs/case1process1.png  used on input line 66.
+<./imgs/case1process2.png, id=4, 888.31876pt x 468.75125pt>
+File: ./imgs/case1process2.png Graphic file (type png)
+<use ./imgs/case1process2.png>
+Package pdftex.def Info: ./imgs/case1process2.png  used on input line 66.
 (pdftex.def)             Requested size: 325.215pt x 171.61133pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./imgs/case1CS.png, id=4, 888.31876pt x 468.75125pt>
+<./imgs/case1CS.png, id=5, 888.31876pt x 468.75125pt>
 File: ./imgs/case1CS.png Graphic file (type png)
 <use ./imgs/case1CS.png>
 Package pdftex.def Info: ./imgs/case1CS.png  used on input line 74.
@@ -192,7 +193,7 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 [1
 
 {/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./imgs/case1.png> <./imgs/case1process1.png>]
-<./imgs/case2.png, id=18, 347.1369pt x 226.6869pt>
+<./imgs/case2.png, id=19, 347.1369pt x 226.6869pt>
 File: ./imgs/case2.png Graphic file (type png)
 <use ./imgs/case2.png>
 Package pdftex.def Info: ./imgs/case2.png  used on input line 88.
@@ -201,7 +202,7 @@ Package pdftex.def Info: ./imgs/case2.png  used on input line 88.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./imgs/case2process1.png, id=19, 860.21375pt x 468.75125pt>
+<./imgs/case2process1.png, id=20, 860.21375pt x 468.75125pt>
 File: ./imgs/case2process1.png Graphic file (type png)
 <use ./imgs/case2process1.png>
 Package pdftex.def Info: ./imgs/case2process1.png  used on input line 96.
@@ -209,7 +210,7 @@ Package pdftex.def Info: ./imgs/case2process1.png  used on input line 96.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./imgs/case2process2.png, id=20, 888.31876pt x 468.75125pt>
+<./imgs/case2process2.png, id=21, 888.31876pt x 468.75125pt>
 File: ./imgs/case2process2.png Graphic file (type png)
 <use ./imgs/case2process2.png>
 Package pdftex.def Info: ./imgs/case2process2.png  used on input line 104.
@@ -217,7 +218,7 @@ Package pdftex.def Info: ./imgs/case2process2.png  used on input line 104.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./imgs/case2process3.png, id=21, 888.31876pt x 468.75125pt>
+<./imgs/case2process3.png, id=22, 888.31876pt x 468.75125pt>
 File: ./imgs/case2process3.png Graphic file (type png)
 <use ./imgs/case2process3.png>
 Package pdftex.def Info: ./imgs/case2process3.png  used on input line 112.
@@ -225,7 +226,7 @@ Package pdftex.def Info: ./imgs/case2process3.png  used on input line 112.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./imgs/case2process4.png, id=22, 888.31876pt x 468.75125pt>
+<./imgs/case2process4.png, id=23, 888.31876pt x 468.75125pt>
 File: ./imgs/case2process4.png Graphic file (type png)
 <use ./imgs/case2process4.png>
 Package pdftex.def Info: ./imgs/case2process4.png  used on input line 120.
@@ -233,7 +234,7 @@ Package pdftex.def Info: ./imgs/case2process4.png  used on input line 120.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./imgs/case2process5.png, id=23, 916.42375pt x 263.98625pt>
+<./imgs/case2process5.png, id=24, 916.42375pt x 263.98625pt>
 File: ./imgs/case2process5.png Graphic file (type png)
 <use ./imgs/case2process5.png>
 Package pdftex.def Info: ./imgs/case2process5.png  used on input line 128.
@@ -241,7 +242,7 @@ Package pdftex.def Info: ./imgs/case2process5.png  used on input line 128.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./imgs/case2CS.png, id=24, 888.31876pt x 468.75125pt>
+<./imgs/case2CS.png, id=25, 888.31876pt x 468.75125pt>
 File: ./imgs/case2CS.png Graphic file (type png)
 <use ./imgs/case2CS.png>
 Package pdftex.def Info: ./imgs/case2CS.png  used on input line 136.
@@ -249,20 +250,20 @@ Package pdftex.def Info: ./imgs/case2CS.png  used on input line 136.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[2 <./imgs/case1CS.png>] [3 <./imgs/case2.png> <./imgs/case2process1.png> <./imgs/case2process2.png>] [4 <./imgs/case2process3.png> <./imgs/case2process4.png> <./imgs/case2process5.png>] [5 <./imgs/case2CS.png>] (./main.aux) ) 
+[2 <./imgs/case1process2.png> <./imgs/case1CS.png>] [3 <./imgs/case2.png> <./imgs/case2process1.png> <./imgs/case2process2.png>] [4 <./imgs/case2process3.png> <./imgs/case2process4.png> <./imgs/case2process5.png>] [5 <./imgs/case2CS.png>] (./main.aux) ) 
 Here is how much of TeX's memory you used:
- 3364 strings out of 492649
- 48437 string characters out of 6129622
+ 3369 strings out of 492649
+ 48569 string characters out of 6129622
  120045 words of memory out of 5000000
- 7210 multiletter control sequences out of 15000+600000
+ 7214 multiletter control sequences out of 15000+600000
  8847 words of font info for 31 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,8n,32p,495b,258s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 41i,8n,32p,496b,258s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on main.pdf (5 pages, 784859 bytes).
+Output written on main.pdf (5 pages, 830648 bytes).
 PDF statistics:
- 65 PDF objects out of 1000 (max. 8388607)
+ 67 PDF objects out of 1000 (max. 8388607)
  31 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 51 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 56 words of extra memory for PDF output out of 10000 (max. 10000000)
 
