@@ -16,6 +16,7 @@ type ClockStruct struct {
 	Clock  int
 	Message string
 	Request bool
+	myTurn bool
 }
 
 var err string
@@ -30,6 +31,9 @@ var logicalClock ClockStruct
 var heldCS bool
 var allowedRequest []bool
 var timeOut int
+var heldQueue []ClockStruct
+var is_on_queue bool
+var messageToSend string
 
 func CheckError(err error) {
 	/*
@@ -63,29 +67,38 @@ func doServerJob() {
 	logicalClock.Request = logicalClockReceived.Request
 	receivedId := logicalClockReceived.Id
 
+	logicalClock.Message = logicalClockReceived.Message
+	logicalClock.Clock++
+	fmt.Println("Current logical Clock: ", logicalClock.Clock)
+
 	if !heldCS {
 		if logicalClock.Request {
-			logicalClock.Message = logicalClockReceived.Message
-
-			logicalClock.Clock++
-
-			fmt.Println("Current logical Clock: ", logicalClock.Clock)
 			fmt.Println("Received request message: ", logicalClock.Message)
-
 			answerBack(logicalClock.Message, receivedId)
-			//broadcastMessage(logicalClock.Message, false)
 		} else {
-			fmt.Println("Received answer message", logicalClockReceived.Message, "from", receivedId)
+			if !is_on_queue {
+				fmt.Println("Received answer message", logicalClockReceived.Message, "from", receivedId)
 
-			receivedIdx := receivedId - 1
-			allowedRequest[receivedIdx] = true
+				receivedIdx := receivedId - 1
+				allowedRequest[receivedIdx] = true
 
-			if checkAllowed(allowedRequest) {
-				go holdCS(logicalClockReceived.Message)
+				if checkAllowed(allowedRequest) {
+					go holdCS(logicalClockReceived.Message)
+				}
+			} else {
+				if logicalClockReceived.myTurn {
+					go holdCS(logicalClockReceived.Message)
+				} else {
+					time.Sleep(time.Second * 1)  // wait the other process start
+					broadcastMessage(messageToSend, true)
+				}
 			}
 		}
 	} else {
+		heldQueue = append(heldQueue, logicalClockReceived)
 		fmt.Println(logicalClockReceived.Message, "ignorado")
+		fmt.Println(logicalClockReceived.Id, "Added to queue")
+		fmt.Println(logicalClockReceived.Clock, "Received clock")
 	}
 }
 
@@ -94,10 +107,15 @@ func holdCS(message string) {
 	fmt.Println("Entrei na CS")
 
 	answerBack(message, 0)
-	time.Sleep(time.Second * 5)  // timeout
+	time.Sleep(time.Second * 10)  // time on critical section
 
 	heldCS = false
 	fmt.Println("Sai da CS")
+
+	for i := 0; i < len(heldQueue); i++ {
+		answerBack(heldQueue[i].Message, heldQueue[i].Id)
+	}
+	heldQueue = make([]ClockStruct, 0)
 }
 
 func checkAllowed(allowedRequest []bool) bool {
@@ -115,6 +133,7 @@ func verifyWhoHolds() {
 		for i := 0; i < nServers; i++ {
 			if allowedRequest[i] == false {
 				fmt.Printf("Servers that holds CS: %d \n", i+1)
+				is_on_queue = true
 			}
 		}
 	}
@@ -159,6 +178,7 @@ func initConnections() error {
 	timeOut = 3
 	nonOtherServers := 2
 	nServers = len(os.Args) - nonOtherServers
+	is_on_queue = false
 
 	/* the 2 remove the name (Process) and remove the fist port, in the case it is my port */
 	if nServers <= 0 {
@@ -172,7 +192,7 @@ func initConnections() error {
 	CheckError(err)
 
 	CliConn = make([]*net.UDPConn, nServers)
-	logicalClock = ClockStruct{Id: idNum, Clock: 0, Message: "", Request: false}
+	logicalClock = ClockStruct{Id: idNum, Clock: 0, Message: "", Request: false, myTurn: false}
 	allowedRequest = make([]bool, nServers)
 
 	// Init client
@@ -240,6 +260,7 @@ func broadcastMessage(message string, request bool){
 			go doClientJob(i)
 		}
 	}
+
 	go verifyWhoHolds()
 }
 
@@ -261,13 +282,14 @@ func main() {
 
 	go readInput(ch)
 
+	var valid bool
 	for {
 		go doServerJob()
 		select {
-			case message, valid := <-ch:
+			case messageToSend, valid = <-ch:
 				if valid {
-					fmt.Printf("Message: %s \n", message)
-					broadcastMessage(message, true)
+					fmt.Printf("Message: %s \n", messageToSend)
+					broadcastMessage(messageToSend, true)
 				} else {
 					fmt.Println("Channel Closed!")
 				}
