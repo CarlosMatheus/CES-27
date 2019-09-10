@@ -33,6 +33,7 @@ var timeOut int
 var heldQueue []ClockStruct
 var wanting bool
 var messageToSend string
+var clockWhenRequested int
 
 func CheckError(err error) {
 	/*
@@ -50,36 +51,68 @@ func PrintError(err error) {
 	}
 }
 
+func handleRequestMessage(logicalClockReceived ClockStruct, receivedId int) {
+
+	idNumber, err := strconv.Atoi(myId)
+	CheckError(err)
+
+	fmt.Println("Received a request message: ", logicalClock.Message)
+
+	if !wanting {
+		replyBack(logicalClock.Message, receivedId)
+	} else {
+		if logicalClockReceived.Clock == clockWhenRequested {
+			if logicalClockReceived.Id < idNumber {
+				addProcessToQueue(logicalClockReceived)
+			} else {
+				replyBack(logicalClock.Message, receivedId)
+			}
+		} else if logicalClockReceived.Clock < clockWhenRequested {
+			addProcessToQueue(logicalClockReceived)
+		} else {
+			replyBack(logicalClock.Message, receivedId)
+		}
+	}
+}
+
+func handleReplyMessage(logicalClockReceived ClockStruct, receivedId int) {
+	if !wanting {
+		fmt.Println("Received answer message", logicalClockReceived.Message, "from", receivedId)
+
+		receivedIdx := receivedId - 1
+		allowedRequest[receivedIdx] = true
+
+		if checkAllowed(allowedRequest) {
+			go holdCS(logicalClockReceived.Message)
+		}
+	} else {
+		if logicalClockReceived.myTurn {
+			go holdCS(logicalClockReceived.Message)
+		} else {
+			time.Sleep(time.Second * 1)  // wait the other process start
+			broadcastMessage(messageToSend, true)
+		}
+	}
+}
+
 func executeReceiveMessage(logicalClockReceived ClockStruct, receivedId int) {
 	if !holding {
 		if logicalClock.Request {
-			fmt.Println("Received request message: ", logicalClock.Message)
-			answerBack(logicalClock.Message, receivedId)
+			handleRequestMessage(logicalClockReceived, receivedId)
 		} else {
-			if !wanting {
-				fmt.Println("Received answer message", logicalClockReceived.Message, "from", receivedId)
-
-				receivedIdx := receivedId - 1
-				allowedRequest[receivedIdx] = true
-
-				if checkAllowed(allowedRequest) {
-					go holdCS(logicalClockReceived.Message)
-				}
-			} else {
-				if logicalClockReceived.myTurn {
-					go holdCS(logicalClockReceived.Message)
-				} else {
-					time.Sleep(time.Second * 1)  // wait the other process start
-					broadcastMessage(messageToSend, true)
-				}
-			}
+			handleReplyMessage(logicalClockReceived, receivedId)
 		}
 	} else {
-		heldQueue = append(heldQueue, logicalClockReceived)
-		fmt.Println(logicalClockReceived.Message, "ignorado")
-		fmt.Println(logicalClockReceived.Id, "Added to queue")
-		fmt.Println(logicalClockReceived.Clock, "Received clock")
+		addProcessToQueue(logicalClockReceived)
 	}
+}
+
+func addProcessToQueue(logicalClockReceived ClockStruct) {
+	heldQueue = append(heldQueue, logicalClockReceived)
+	// todo: shoud increase clock cicle ?
+	fmt.Println(logicalClockReceived.Message, "ignorado")
+	fmt.Println(logicalClockReceived.Id, "Added to queue")
+	fmt.Println(logicalClockReceived.Clock, "Received clock")
 }
 
 func doServerJob() {
@@ -105,18 +138,20 @@ func doServerJob() {
 }
 
 func holdCS(message string) {
+
 	holding = true
 	fmt.Println("Entrei na CS")
 
-	answerBack(message, 0)
+	replyBack(message, 0)
 	time.Sleep(time.Second * 10)  // time on critical section
 
 	holding = false
 	fmt.Println("Sai da CS")
 
 	for i := 0; i < len(heldQueue); i++ {
-		answerBack(heldQueue[i].Message, heldQueue[i].Id)
+		replyBack(heldQueue[i].Message, heldQueue[i].Id)
 	}
+
 	heldQueue = make([]ClockStruct, 0)
 }
 
@@ -189,7 +224,9 @@ func initConnections() error {
 	wanting = false
 	holding = false
 
-	/* the 2 remove the name (Process) and remove the fist port, in the case it is my port */
+	/*
+	the 2 remove the name (Process) and remove the fist port, in the case it is my port
+	*/
 	if nServers <= 0 {
 		return errors.New("insufficient number of servers")
 	}
@@ -252,6 +289,7 @@ func readInput(ch chan string) {
 
 func broadcastMessage(message string, request bool){
 
+
 	idNum, err := strconv.Atoi(myId)
 	CheckError(err)
 
@@ -268,11 +306,19 @@ func broadcastMessage(message string, request bool){
 			go doClientJob(i)
 		}
 	}
-
-	executeClockCycle()
 }
 
-func answerBack(message string, receivedId int){
+func broadCastRequestMessage() {
+	executeClockCycle()
+	fmt.Printf("Message: %s \n", messageToSend)
+
+	clockWhenRequested = logicalClock.Clock
+
+	broadcastMessage(messageToSend, true)
+}
+
+func replyBack(message string, receivedId int){
+	executeClockCycle()
 	logicalClock.Message = message
 	logicalClock.Request = false
 	go doClientJob(receivedId - 1)
@@ -296,8 +342,7 @@ func main() {
 		select {
 			case messageToSend, valid = <-ch:
 				if valid {
-					fmt.Printf("Message: %s \n", messageToSend)
-					broadcastMessage(messageToSend, true)
+					broadCastRequestMessage()
 				} else {
 					fmt.Println("Channel Closed!")
 				}
