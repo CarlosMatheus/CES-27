@@ -111,8 +111,7 @@ func executeReceiveMessage(logicalClockReceived ClockStruct, receivedId int) {
 func addProcessToQueue(logicalClockReceived ClockStruct) {
 	heldQueue = append(heldQueue, logicalClockReceived)
 	// todo: shoud increase clock cicle ?
-	fmt.Println(logicalClockReceived.Message, "ignorado")
-	fmt.Println(logicalClockReceived.Id, "Added to queue")
+	fmt.Println("Received reply message \"", logicalClockReceived.Message, "\" from process:", logicalClockReceived.Id)
 	fmt.Println(logicalClockReceived.Clock, "Received clock")
 }
 
@@ -168,18 +167,6 @@ func checkAllowed(allowedRequest []bool) bool {
 	}
 	return true
 }
-
-//func verifyWhoHolds() {
-//	time.Sleep(time.Second * 3)  // timeout
-//	if !checkAllowed(allowedRequest) {
-//		for i := 0; i < nServers; i++ {
-//			if allowedRequest[i] == false {
-//				fmt.Printf("Servers that holds CS: %d \n", i+1)
-//				wanting = true
-//			}
-//		}
-//	}
-//}
 
 func doClientJob(otherProcess int) {
 
@@ -312,17 +299,33 @@ func broadcastMessage(message string, request bool){
 	}
 }
 
-func broadCastRequestMessage() {
-
-	wanting = true
-
+func executeInternalAction() {
+	fmt.Println("Executing internal action")
 	executeClockCycle()
+}
 
-	fmt.Printf("Message: %s \n", messageToSend)
+func broadCastRequestMessage() {
+	if wanting == true || holding == true {
+		/*
+			Received an improper message
+		 */
+		executeClockCycle()
+		fmt.Println("\"", messageToSend, "\" ignorado")
+	} else {
+		if messageToSend == myId {
+			executeInternalAction()
+		} else {
+			wanting = true
 
-	broadcastMessage(messageToSend, true)
+			executeClockCycle()
 
-	clockWhenRequested = logicalClock.Clock
+			fmt.Printf("Message: %s \n", messageToSend)
+
+			broadcastMessage(messageToSend, true)
+
+			clockWhenRequested = logicalClock.Clock
+		}
+	}
 }
 
 func replyBack(message string, receivedId int){
