@@ -16,7 +16,6 @@ type ClockStruct struct {
 	Clock  int
 	Message string
 	Request bool
-	myTurn bool
 }
 
 var err string
@@ -28,11 +27,11 @@ var ServerConn *net.UDPConn
 var ch chan string
 var myId string
 var logicalClock ClockStruct
-var heldCS bool
+var holding bool
 var allowedRequest []bool
 var timeOut int
 var heldQueue []ClockStruct
-var is_on_queue bool
+var wanting bool
 var messageToSend string
 
 func CheckError(err error) {
@@ -51,32 +50,13 @@ func PrintError(err error) {
 	}
 }
 
-func doServerJob() {
-	buf := make([]byte, 1024)
-
-	n, _, err := ServerConn.ReadFromUDP(buf[0:])
-	CheckError(err)
-
-	var logicalClockReceived ClockStruct
-	err = json.Unmarshal(buf[:n], &logicalClockReceived)
-	CheckError(err)
-
-	if logicalClockReceived.Clock > logicalClock.Clock {
-		logicalClock.Clock = logicalClockReceived.Clock
-	}
-	logicalClock.Request = logicalClockReceived.Request
-	receivedId := logicalClockReceived.Id
-
-	logicalClock.Message = logicalClockReceived.Message
-	logicalClock.Clock++
-	fmt.Println("Current logical Clock: ", logicalClock.Clock)
-
-	if !heldCS {
+func executeReceiveMessage(logicalClockReceived ClockStruct, receivedId int) {
+	if !holding {
 		if logicalClock.Request {
 			fmt.Println("Received request message: ", logicalClock.Message)
 			answerBack(logicalClock.Message, receivedId)
 		} else {
-			if !is_on_queue {
+			if !wanting {
 				fmt.Println("Received answer message", logicalClockReceived.Message, "from", receivedId)
 
 				receivedIdx := receivedId - 1
@@ -102,14 +82,36 @@ func doServerJob() {
 	}
 }
 
+func doServerJob() {
+	buf := make([]byte, 1024)
+
+	n, _, err := ServerConn.ReadFromUDP(buf[0:])
+	CheckError(err)
+
+	var logicalClockReceived ClockStruct
+	err = json.Unmarshal(buf[:n], &logicalClockReceived)
+	CheckError(err)
+
+	if logicalClockReceived.Clock > logicalClock.Clock {
+		logicalClock.Clock = logicalClockReceived.Clock
+	}
+	logicalClock.Request = logicalClockReceived.Request
+	receivedId := logicalClockReceived.Id
+
+	logicalClock.Message = logicalClockReceived.Message
+
+	executeClockCycle()
+	executeReceiveMessage(logicalClockReceived, receivedId)
+}
+
 func holdCS(message string) {
-	heldCS = true
+	holding = true
 	fmt.Println("Entrei na CS")
 
 	answerBack(message, 0)
 	time.Sleep(time.Second * 10)  // time on critical section
 
-	heldCS = false
+	holding = false
 	fmt.Println("Sai da CS")
 
 	for i := 0; i < len(heldQueue); i++ {
@@ -127,17 +129,17 @@ func checkAllowed(allowedRequest []bool) bool {
 	return true
 }
 
-func verifyWhoHolds() {
-	time.Sleep(time.Second * 3)  // timeout
-	if !checkAllowed(allowedRequest) {
-		for i := 0; i < nServers; i++ {
-			if allowedRequest[i] == false {
-				fmt.Printf("Servers that holds CS: %d \n", i+1)
-				is_on_queue = true
-			}
-		}
-	}
-}
+//func verifyWhoHolds() {
+//	time.Sleep(time.Second * 3)  // timeout
+//	if !checkAllowed(allowedRequest) {
+//		for i := 0; i < nServers; i++ {
+//			if allowedRequest[i] == false {
+//				fmt.Printf("Servers that holds CS: %d \n", i+1)
+//				wanting = true
+//			}
+//		}
+//	}
+//}
 
 func doClientJob(otherProcess int) {
 
@@ -172,13 +174,20 @@ func getMyPortNumber(portArg string, myId string) string {
 	return ":" + newPortStr
 }
 
+func executeClockCycle() {
+	logicalClock.Clock++
+	fmt.Println("Executing clock cycle")
+	fmt.Println("Current logical Clock: ", logicalClock.Clock)
+}
+
 func initConnections() error {
 	ch  = make(chan string)
 
 	timeOut = 3
 	nonOtherServers := 2
 	nServers = len(os.Args) - nonOtherServers
-	is_on_queue = false
+	wanting = false
+	holding = false
 
 	/* the 2 remove the name (Process) and remove the fist port, in the case it is my port */
 	if nServers <= 0 {
@@ -225,8 +234,6 @@ func initConnections() error {
 	ServerConn, err = net.ListenUDP("udp", ServerAddr)
 	CheckError(err)
 
-	heldCS = false
-
 	return nil
 }
 
@@ -244,6 +251,7 @@ func readInput(ch chan string) {
 }
 
 func broadcastMessage(message string, request bool){
+
 	idNum, err := strconv.Atoi(myId)
 	CheckError(err)
 
@@ -261,7 +269,7 @@ func broadcastMessage(message string, request bool){
 		}
 	}
 
-	go verifyWhoHolds()
+	executeClockCycle()
 }
 
 func answerBack(message string, receivedId int){
