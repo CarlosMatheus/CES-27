@@ -63,34 +63,30 @@ func handleRequestMessage(logicalClockReceived ClockStruct, receivedId int) {
 	} else {
 		if logicalClockReceived.Clock == clockWhenRequested {
 			if logicalClockReceived.Id < idNumber {
-				addProcessToQueue(logicalClockReceived)
-			} else {
 				replyBack(logicalClock.Message, receivedId)
+			} else {
+				addProcessToQueue(logicalClockReceived)
 			}
 		} else if logicalClockReceived.Clock < clockWhenRequested {
-			addProcessToQueue(logicalClockReceived)
-		} else {
 			replyBack(logicalClock.Message, receivedId)
+		} else {
+			addProcessToQueue(logicalClockReceived)
 		}
 	}
 }
 
 func handleReplyMessage(logicalClockReceived ClockStruct, receivedId int) {
 	if !wanting {
-		fmt.Println("Received answer message", logicalClockReceived.Message, "from", receivedId)
+		err := errors.New("A process cannot receive a reply message while it is in released state")
+		CheckError(err)
+	} else {
+		fmt.Println("Received reply message \"", logicalClockReceived.Message, "\" from process:", receivedId)
 
 		receivedIdx := receivedId - 1
 		allowedRequest[receivedIdx] = true
 
 		if checkAllowed(allowedRequest) {
 			go holdCS(logicalClockReceived.Message)
-		}
-	} else {
-		if logicalClockReceived.myTurn {
-			go holdCS(logicalClockReceived.Message)
-		} else {
-			time.Sleep(time.Second * 1)  // wait the other process start
-			broadcastMessage(messageToSend, true)
 		}
 	}
 }
@@ -103,7 +99,12 @@ func executeReceiveMessage(logicalClockReceived ClockStruct, receivedId int) {
 			handleReplyMessage(logicalClockReceived, receivedId)
 		}
 	} else {
-		addProcessToQueue(logicalClockReceived)
+		if logicalClock.Request {
+			addProcessToQueue(logicalClockReceived)
+		} else {
+			err := errors.New("Process cannot receive a reply message while in Held state")
+			CheckError(err)
+		}
 	}
 }
 
@@ -140,13 +141,17 @@ func doServerJob() {
 func holdCS(message string) {
 
 	holding = true
+	wanting = false
+
 	fmt.Println("Entrei na CS")
 
 	replyBack(message, 0)
 	time.Sleep(time.Second * 10)  // time on critical section
 
-	holding = false
 	fmt.Println("Sai da CS")
+
+	holding = false
+	wanting = false
 
 	for i := 0; i < len(heldQueue); i++ {
 		replyBack(heldQueue[i].Message, heldQueue[i].Id)
@@ -211,8 +216,8 @@ func getMyPortNumber(portArg string, myId string) string {
 
 func executeClockCycle() {
 	logicalClock.Clock++
-	fmt.Println("Executing clock cycle")
-	fmt.Println("Current logical Clock: ", logicalClock.Clock)
+	//fmt.Println("Executing clock cycle")
+	//fmt.Println("Current logical Clock: ", logicalClock.Clock)
 }
 
 func initConnections() error {
@@ -238,7 +243,7 @@ func initConnections() error {
 	CheckError(err)
 
 	CliConn = make([]*net.UDPConn, nServers)
-	logicalClock = ClockStruct{Id: idNum, Clock: 0, Message: "", Request: false, myTurn: false}
+	logicalClock = ClockStruct{Id: idNum, Clock: 0, Message: "", Request: false}
 	allowedRequest = make([]bool, nServers)
 
 	// Init client
@@ -289,7 +294,6 @@ func readInput(ch chan string) {
 
 func broadcastMessage(message string, request bool){
 
-
 	idNum, err := strconv.Atoi(myId)
 	CheckError(err)
 
@@ -309,12 +313,16 @@ func broadcastMessage(message string, request bool){
 }
 
 func broadCastRequestMessage() {
+
+	wanting = true
+
 	executeClockCycle()
+
 	fmt.Printf("Message: %s \n", messageToSend)
 
-	clockWhenRequested = logicalClock.Clock
-
 	broadcastMessage(messageToSend, true)
+
+	clockWhenRequested = logicalClock.Clock
 }
 
 func replyBack(message string, receivedId int){
